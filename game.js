@@ -257,9 +257,10 @@ function rescale() {
   const vh = window.innerHeight;
   const sx = vw / world.width;
   const sy = vh / world.height;
-  const controlsHeight = (touchControls && getComputedStyle(touchControls).display !== 'none') ? 140 : 0;
-  const syAvailable = (vh - controlsHeight) / world.height;
-  const scale = Math.min(1, sx, syAvailable); // never upscale beyond 1, account for controls
+  const controlsRect = (touchControls && getComputedStyle(touchControls).display !== 'none') ? touchControls.getBoundingClientRect() : null;
+  const controlsHeight = controlsRect ? Math.ceil(window.innerHeight - controlsRect.top) : 0;
+  const syAvailable = Math.max(0.7, (vh - controlsHeight) / world.height);
+  const scale = Math.min(sx, syAvailable); // allow upscaling on small phones, but respect viewport
   wrap.style.transform = `scale(${scale})`;
   // center horizontally & vertically
   const scaledW = world.width * scale;
@@ -274,6 +275,12 @@ function rescale() {
 window.addEventListener('resize', rescale);
 window.addEventListener('orientationchange', rescale);
 rescale();
+
+// Recompute scale when controls size/layout changes
+if (window.ResizeObserver && touchControls) {
+  const ro = new ResizeObserver(() => rescale());
+  ro.observe(touchControls);
+}
 
 // Start overlay logic
 const startOverlay = document.getElementById('start-overlay');

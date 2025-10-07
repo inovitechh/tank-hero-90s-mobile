@@ -21,13 +21,17 @@
       </div>
       <div id="touch-controls" class="touch-controls" aria-label="Dokunmatik kontroller">
         <div class="dpad" aria-hidden="false">
-          <button class="btn-dir up" data-key="arrowup" aria-label="Yukarı">▲</button>
-          <div class="middle-row">
+          <div class="row up-row">
+            <button class="btn-dir up" data-key="arrowup" aria-label="Yukarı">▲</button>
+          </div>
+          <div class="row mid-row">
             <button class="btn-dir left" data-key="arrowleft" aria-label="Sol">◀</button>
-            <button class="btn-dir center" disabled aria-hidden="true"></button>
+            <div class="spacer"></div>
             <button class="btn-dir right" data-key="arrowright" aria-label="Sağ">▶</button>
           </div>
-          <button class="btn-dir down" data-key="arrowdown" aria-label="Aşağı">▼</button>
+          <div class="row down-row">
+            <button class="btn-dir down" data-key="arrowdown" aria-label="Aşağı">▼</button>
+          </div>
         </div>
         <div class="actions">
           <button id="btn-fire" class="btn-action fire" data-key="space" aria-label="Ateş">ATEŞ</button>
