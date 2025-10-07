@@ -105,6 +105,8 @@ html, body {
   z-index: 10;
 }
 
+.start-overlay.hidden { display: none !important; pointer-events: none; }
+
 .start-card {
   background: #171923;
   border: 1px solid #222634;

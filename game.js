@@ -290,7 +290,10 @@ const btnStart = document.getElementById('btn-start');
 
 function startGame() {
   state.running = true;
-  if (startOverlay) startOverlay.style.display = 'none';
+  if (startOverlay) {
+    startOverlay.classList.add('hidden');
+    startOverlay.style.display = 'none';
+  }
   if (btnStart) btnStart.blur();
 }
 
