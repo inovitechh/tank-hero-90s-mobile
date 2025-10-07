@@ -259,13 +259,15 @@ function rescale() {
   const sy = vh / world.height;
   const controlsRect = (touchControls && getComputedStyle(touchControls).display !== 'none') ? touchControls.getBoundingClientRect() : null;
   const controlsHeight = controlsRect ? Math.ceil(window.innerHeight - controlsRect.top) : 0;
-  const syAvailable = Math.max(0.7, (vh - controlsHeight) / world.height);
-  const scale = Math.min(sx, syAvailable); // allow upscaling on small phones, but respect viewport
+  const syAvailable = Math.max(0.82, (vh - controlsHeight) / world.height);
+  // Expand to fill right-side space on mobile by preferring width scale
+  const scale = isMobileLike ? Math.min(sx * 1.3, syAvailable) : Math.min(sx, syAvailable);
   wrap.style.transform = `scale(${scale})`;
   // center horizontally & vertically
   const scaledW = world.width * scale;
   const scaledH = world.height * scale;
-  const offsetX = Math.max(0, (vw - scaledW) / 2);
+  const isMobileLike = (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) || vw <= 900;
+  const offsetX = isMobileLike ? Math.max(0, vw - scaledW) : Math.max(0, (vw - scaledW) / 2);
   const offsetY = Math.max(0, (vh - controlsHeight - scaledH) / 2);
   wrap.style.position = 'absolute';
   wrap.style.left = `${offsetX}px`;
