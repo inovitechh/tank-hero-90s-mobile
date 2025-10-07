@@ -18,6 +18,7 @@ const state = {
   explosions: [],
   score: 0,
   running: false,
+  hasStarted: false,
   tankScale: 1.0,
 };
 
@@ -124,13 +125,15 @@ function update(dtMs) {
   state.bullets = state.bullets.filter(b => b.ttl > 0 && b.x >= -10 && b.x <= world.width + 10 && b.y >= -10 && b.y <= world.height + 10);
 
   // Collisions
-  const hitRadius = 12; // smaller hitbox for easier dodging
+  const hitRadius = 12 * (state.tankScale || 1); // scale hitbox with visual tank size
   // Player hit by enemy bullets
   for (const b of state.bullets) {
     if (b.friendly) continue;
     if (Math.hypot(b.x - player.x, b.y - player.y) < hitRadius) {
       state.status = 'Vuruldun! R ile yeniden başla';
       state.running = false;
+    // clear any movement input to avoid sliding when stopped
+    state.keys.clear();
     }
   }
 
@@ -262,9 +265,9 @@ function rescale() {
   const controlsRect = (touchControls && getComputedStyle(touchControls).display !== 'none') ? touchControls.getBoundingClientRect() : null;
   const controlsHeight = controlsRect ? Math.ceil(window.innerHeight - controlsRect.top) : 0;
   const isMobileLike = (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) || vw <= 900;
-  const syAvailable = Math.max(0.94, (vh - controlsHeight) / world.height);
-  // Expand to fill right-side space on mobile by preferring width scale
-  const scale = isMobileLike ? Math.min(sx * 1.48, syAvailable) : Math.min(sx, syAvailable);
+  const syAvailable = Math.max(0.98, (vh - controlsHeight) / world.height);
+  // Expand to fill space on mobile by preferring width scale more
+  const scale = isMobileLike ? Math.min(sx * 1.6, syAvailable) : Math.min(sx, syAvailable);
   wrap.style.transform = `scale(${scale})`;
   // center horizontally & vertically
   const scaledW = world.width * scale;
@@ -275,8 +278,8 @@ function rescale() {
   wrap.style.left = `${offsetX}px`;
   wrap.style.top = `${offsetY}px`;
 
-  // Increase tank size slightly on mobile for better touch readability
-  state.tankScale = isMobileLike ? 1.22 : 1.0;
+  // Increase tank size more on mobile for readability on mid phones
+  state.tankScale = isMobileLike ? 1.35 : 1.0;
 }
 
 window.addEventListener('resize', rescale);
@@ -294,6 +297,8 @@ const startOverlay = document.getElementById('start-overlay');
 const btnStart = document.getElementById('btn-start');
 
 function startGame() {
+  if (state.hasStarted) return;
+  state.hasStarted = true;
   state.running = true;
   if (startOverlay) {
     startOverlay.classList.add('hidden');
@@ -308,22 +313,24 @@ if (btnStart) {
 }
 
 if (startOverlay) {
-  startOverlay.addEventListener('click', () => { if (!state.running) startGame(); });
-  startOverlay.addEventListener('touchstart', (e) => { if (!state.running) { e.preventDefault(); startGame(); } }, { passive: false });
+  startOverlay.addEventListener('click', () => { if (!state.hasStarted) startGame(); });
+  startOverlay.addEventListener('touchstart', (e) => { if (!state.hasStarted) { e.preventDefault(); startGame(); } }, { passive: false });
 }
 
-canvas.addEventListener('touchstart', (e) => { if (!state.running) { e.preventDefault(); startGame(); } }, { passive: false });
+canvas.addEventListener('touchstart', (e) => { if (!state.hasStarted) { e.preventDefault(); startGame(); } }, { passive: false });
 
 window.addEventListener('keydown', (e) => {
   if (!state.running && (e.key === ' ' || e.key === 'Enter' || e.key === 'enter')) {
-    e.preventDefault();
-    startGame();
+    if (!state.hasStarted) {
+      e.preventDefault();
+      startGame();
+    }
   }
 });
 
 // Global fallback: any first pointer/click starts the game (for stubborn mobile browsers)
-document.addEventListener('pointerdown', () => { if (!state.running) startGame(); }, { once: false });
-document.addEventListener('click', () => { if (!state.running) startGame(); }, { once: false });
+document.addEventListener('pointerdown', () => { if (!state.hasStarted) startGame(); }, { once: false });
+document.addEventListener('click', () => { if (!state.hasStarted) startGame(); }, { once: false });
 
 function resetGame() {
   state.bullets = [];
