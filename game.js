@@ -287,14 +287,31 @@ if (window.ResizeObserver && touchControls) {
 // Start overlay logic
 const startOverlay = document.getElementById('start-overlay');
 const btnStart = document.getElementById('btn-start');
-if (btnStart) {
-  btnStart.addEventListener('click', () => {
-    state.running = true;
-    startOverlay.style.display = 'none';
-    // Hide mouse focus from button for game keys
-    btnStart.blur();
-  });
+
+function startGame() {
+  state.running = true;
+  if (startOverlay) startOverlay.style.display = 'none';
+  if (btnStart) btnStart.blur();
 }
+
+if (btnStart) {
+  btnStart.addEventListener('click', startGame);
+  btnStart.addEventListener('touchstart', (e) => { e.preventDefault(); startGame(); }, { passive: false });
+}
+
+if (startOverlay) {
+  startOverlay.addEventListener('click', (e) => { if (e.target === startOverlay) startGame(); });
+  startOverlay.addEventListener('touchstart', (e) => { if (e.target === startOverlay) { e.preventDefault(); startGame(); } }, { passive: false });
+}
+
+canvas.addEventListener('touchstart', (e) => { if (!state.running) { e.preventDefault(); startGame(); } }, { passive: false });
+
+window.addEventListener('keydown', (e) => {
+  if (!state.running && (e.key === ' ' || e.key === 'Enter' || e.key === 'enter')) {
+    e.preventDefault();
+    startGame();
+  }
+});
 
 function resetGame() {
   state.bullets = [];
