@@ -18,6 +18,7 @@ const state = {
   explosions: [],
   score: 0,
   running: false,
+  tankScale: 1.0,
 };
 
 function clamp(value, min, max) {
@@ -186,16 +187,17 @@ function drawTank(t) {
   ctx.save();
   ctx.translate(t.x, t.y);
   ctx.rotate(t.angle);
+  const s = state.tankScale || 1.0;
   // body
   ctx.fillStyle = t.color;
-  ctx.fillRect(-16, -12, 32, 24);
+  ctx.fillRect(-16 * s, -12 * s, 32 * s, 24 * s);
   // turret
   ctx.fillStyle = '#e6e6e6';
-  ctx.fillRect(0, -4, 18, 8);
+  ctx.fillRect(0, -4 * s, 18 * s, 8 * s);
   // hatch
   ctx.beginPath();
   ctx.fillStyle = '#2f3548';
-  ctx.arc(-6, 0, 6, 0, Math.PI * 2);
+  ctx.arc(-6 * s, 0, 6 * s, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }
@@ -260,18 +262,21 @@ function rescale() {
   const controlsRect = (touchControls && getComputedStyle(touchControls).display !== 'none') ? touchControls.getBoundingClientRect() : null;
   const controlsHeight = controlsRect ? Math.ceil(window.innerHeight - controlsRect.top) : 0;
   const isMobileLike = (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) || vw <= 900;
-  const syAvailable = Math.max(0.9, (vh - controlsHeight) / world.height);
+  const syAvailable = Math.max(0.94, (vh - controlsHeight) / world.height);
   // Expand to fill right-side space on mobile by preferring width scale
-  const scale = isMobileLike ? Math.min(sx * 1.42, syAvailable) : Math.min(sx, syAvailable);
+  const scale = isMobileLike ? Math.min(sx * 1.48, syAvailable) : Math.min(sx, syAvailable);
   wrap.style.transform = `scale(${scale})`;
   // center horizontally & vertically
   const scaledW = world.width * scale;
   const scaledH = world.height * scale;
-  const offsetX = isMobileLike ? Math.max(0, vw - scaledW) : Math.max(0, (vw - scaledW) / 2);
+  const offsetX = isMobileLike ? Math.max(0, (vw - scaledW) / 2) : Math.max(0, (vw - scaledW) / 2);
   const offsetY = Math.max(0, (vh - controlsHeight - scaledH) / 2);
   wrap.style.position = 'absolute';
   wrap.style.left = `${offsetX}px`;
   wrap.style.top = `${offsetY}px`;
+
+  // Increase tank size slightly on mobile for better touch readability
+  state.tankScale = isMobileLike ? 1.22 : 1.0;
 }
 
 window.addEventListener('resize', rescale);

@@ -145,11 +145,11 @@ html, body {
   right: 0;
   bottom: 4px;
   display: none;
-  flex-direction: column;
+  flex-direction: row; /* left actions, right dpad */
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 8px;
-  padding: 0 16px;
+  padding: 0 8px; /* bring actions closer to left edge */
   pointer-events: none; /* container ignores, buttons re-enable */
   z-index: 9;
 }
@@ -193,12 +193,12 @@ html, body {
 }
 
 .btn-action.fire {
-  width: clamp(36px, 10vw, 52px);
+  width: clamp(48px, 16vw, 72px); /* widen */
   height: clamp(36px, 10vw, 52px);
   background: rgba(89, 153, 255, 0.9);
   color: white;
   border-color: #4a78ff;
-  margin-left: 10px;
+  margin-left: 0;
 }
 
 .btn-action.reset {
@@ -212,11 +212,18 @@ html, body {
 
 
 .touch-controls .actions {
-  display: flex;
+  /* left column: Fire aligned with up-row, R aligned with mid-row */
+  display: grid;
+  grid-template-rows: auto auto; /* row1: FIRE (aligns with up), row2: R (aligns with mid) */
+  gap: 6px;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
+  justify-items: start; /* left align */
+  margin-right: auto; /* push D-Pad to the right */
+  align-self: flex-start; /* stick to bottom-left padding */
 }
+
+/* push D-Pad to the right side */
+.touch-controls .dpad { margin-left: auto; }
 
 /* Show touch controls on small screens or when touch is primary */
 @media (hover: none) and (pointer: coarse) {
