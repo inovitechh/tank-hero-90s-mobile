@@ -71,6 +71,8 @@ function shoot(from) {
 function update(dtMs) {
   if (!state.running) return;
 
+  const dtFactor = Math.max(0.5, Math.min(3, dtMs / 16.67)); // normalize to ~60fps
+
   // Input
   const up = state.keys.has('w') || state.keys.has('arrowup');
   const down = state.keys.has('s') || state.keys.has('arrowdown');
@@ -93,8 +95,8 @@ function update(dtMs) {
   if (state.keys.has(' ') || state.keys.has('space')) shoot(player);
 
   // Move player
-  player.x = clamp(player.x + player.vx, 16, world.width - 16);
-  player.y = clamp(player.y + player.vy, 16, world.height - 16);
+  player.x = clamp(player.x + player.vx * dtFactor, 16, world.width - 16);
+  player.y = clamp(player.y + player.vy * dtFactor, 16, world.height - 16);
 
   // Cooldowns
   if (player.cooldownMs > 0) player.cooldownMs -= dtMs;
@@ -109,18 +111,18 @@ function update(dtMs) {
     e.vx = ux * e.speed;
     e.vy = uy * e.speed;
     e.angle = Math.atan2(uy, ux);
-    e.x = clamp(e.x + e.vx, 16, world.width - 16);
-    e.y = clamp(e.y + e.vy, 16, world.height - 16);
+    e.x = clamp(e.x + e.vx * dtFactor, 16, world.width - 16);
+    e.y = clamp(e.y + e.vy * dtFactor, 16, world.height - 16);
 
-    if (Math.random() < 0.004) shoot(e); // further reduce enemy fire rate
+    if (Math.random() < 0.004 * dtFactor) shoot(e); // scale by time step
     if (e.cooldownMs > 0) e.cooldownMs -= dtMs;
   }
 
   // Bullets
   for (const b of state.bullets) {
-    b.x += b.dx;
-    b.y += b.dy;
-    b.ttl -= 1;
+    b.x += b.dx * dtFactor;
+    b.y += b.dy * dtFactor;
+    b.ttl -= dtFactor;
   }
   state.bullets = state.bullets.filter(b => b.ttl > 0 && b.x >= -10 && b.x <= world.width + 10 && b.y >= -10 && b.y <= world.height + 10);
 
@@ -154,8 +156,8 @@ function update(dtMs) {
 
   // explosions
   for (const ex of state.explosions) {
-    ex.r += 1.8;
-    ex.ttl -= 1;
+    ex.r += 1.8 * dtFactor;
+    ex.ttl -= dtFactor;
   }
   state.explosions = state.explosions.filter(ex => ex.ttl > 0);
 

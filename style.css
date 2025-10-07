@@ -180,21 +180,21 @@ html, body {
 
 .btn-dir,
 .btn-action {
-  /* Smaller, proportional sizes for phones */
-  width: clamp(32px, 8vw, 48px);
-  height: clamp(32px, 8vw, 48px);
-  border-radius: 12px;
+  /* Larger, proportional sizes for phones */
+  width: clamp(56px, 16vw, 84px);
+  height: clamp(56px, 16vw, 84px);
+  border-radius: 16px;
   background: rgba(23, 25, 35, 0.85);
   border: 1px solid #222634;
   color: var(--text);
   font-weight: 700;
-  font-size: clamp(10px, 2.6vw, 14px);
+  font-size: clamp(14px, 4vw, 20px);
   touch-action: none;
 }
 
 .btn-action.fire {
-  width: clamp(48px, 16vw, 72px); /* widen */
-  height: clamp(36px, 10vw, 52px);
+  width: clamp(80px, 24vw, 120px); /* widen */
+  height: clamp(56px, 16vw, 84px);
   background: rgba(89, 153, 255, 0.9);
   color: white;
   border-color: #4a78ff;
@@ -202,8 +202,8 @@ html, body {
 }
 
 .btn-action.reset {
-  width: clamp(36px, 10vw, 52px);
-  height: clamp(36px, 10vw, 52px);
+  width: clamp(56px, 16vw, 84px);
+  height: clamp(56px, 16vw, 84px);
   background: rgba(55, 214, 122, 0.9);
   color: #05150b;
   border-color: #2aa864;
@@ -211,30 +211,25 @@ html, body {
 
 
 
+/* Right-handed default: Fire/R on RIGHT, D-Pad on LEFT */
 .touch-controls .actions {
-  /* left column: Fire aligned with up-row, R aligned with mid-row */
-  display: grid;
-  grid-template-rows: auto auto; /* row1: FIRE (aligns with up), row2: R (aligns with mid) */
-  gap: 6px;
-  align-items: center;
-  justify-items: start; /* left align */
-  margin-left: auto; /* push D-Pad to the left */
-  align-self: flex-start;
-  position: absolute;
-  right: 8px; /* stick to right edge */
-  /* align Fire with Up: offset by one button height + gap from bottom */
-  bottom: calc(4px + clamp(32px, 8vw, 48px) + 6px);
+  position: fixed;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+  pointer-events: auto;
 }
 
-/* push D-Pad to the left side (right-handed layout) */
 .touch-controls .dpad {
-  margin-right: auto;
-  position: absolute;
-  left: 8px; /* stick to left edge */
-  bottom: 4px;
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  pointer-events: auto;
 }
 
-/* Show touch controls on small screens or when touch is primary */
 @media (hover: none) and (pointer: coarse) {
   .touch-controls { display: flex; }
 }
@@ -243,9 +238,6 @@ html, body {
   .touch-controls { display: flex; }
 }
 
-/* Nudge D-Pad a bit to the right on mobile */
-@media (hover: none) and (pointer: coarse) {
-  .touch-controls .dpad { margin-left: 0; }
-}
+/* remove old nudges */
 
 
