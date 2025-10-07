@@ -300,8 +300,8 @@ if (btnStart) {
 }
 
 if (startOverlay) {
-  startOverlay.addEventListener('click', (e) => { if (e.target === startOverlay) startGame(); });
-  startOverlay.addEventListener('touchstart', (e) => { if (e.target === startOverlay) { e.preventDefault(); startGame(); } }, { passive: false });
+  startOverlay.addEventListener('click', () => { if (!state.running) startGame(); });
+  startOverlay.addEventListener('touchstart', (e) => { if (!state.running) { e.preventDefault(); startGame(); } }, { passive: false });
 }
 
 canvas.addEventListener('touchstart', (e) => { if (!state.running) { e.preventDefault(); startGame(); } }, { passive: false });
