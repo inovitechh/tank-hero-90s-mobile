@@ -259,6 +259,7 @@ function rescale() {
   const sy = vh / world.height;
   const controlsRect = (touchControls && getComputedStyle(touchControls).display !== 'none') ? touchControls.getBoundingClientRect() : null;
   const controlsHeight = controlsRect ? Math.ceil(window.innerHeight - controlsRect.top) : 0;
+  const isMobileLike = (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) || vw <= 900;
   const syAvailable = Math.max(0.82, (vh - controlsHeight) / world.height);
   // Expand to fill right-side space on mobile by preferring width scale
   const scale = isMobileLike ? Math.min(sx * 1.3, syAvailable) : Math.min(sx, syAvailable);
@@ -266,7 +267,6 @@ function rescale() {
   // center horizontally & vertically
   const scaledW = world.width * scale;
   const scaledH = world.height * scale;
-  const isMobileLike = (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) || vw <= 900;
   const offsetX = isMobileLike ? Math.max(0, vw - scaledW) : Math.max(0, (vw - scaledW) / 2);
   const offsetY = Math.max(0, (vh - controlsHeight - scaledH) / 2);
   wrap.style.position = 'absolute';
@@ -315,6 +315,10 @@ window.addEventListener('keydown', (e) => {
     startGame();
   }
 });
+
+// Global fallback: any first pointer/click starts the game (for stubborn mobile browsers)
+document.addEventListener('pointerdown', () => { if (!state.running) startGame(); }, { once: false });
+document.addEventListener('click', () => { if (!state.running) startGame(); }, { once: false });
 
 function resetGame() {
   state.bullets = [];
