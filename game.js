@@ -260,9 +260,9 @@ function rescale() {
   const controlsRect = (touchControls && getComputedStyle(touchControls).display !== 'none') ? touchControls.getBoundingClientRect() : null;
   const controlsHeight = controlsRect ? Math.ceil(window.innerHeight - controlsRect.top) : 0;
   const isMobileLike = (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) || vw <= 900;
-  const syAvailable = Math.max(0.82, (vh - controlsHeight) / world.height);
+  const syAvailable = Math.max(0.9, (vh - controlsHeight) / world.height);
   // Expand to fill right-side space on mobile by preferring width scale
-  const scale = isMobileLike ? Math.min(sx * 1.3, syAvailable) : Math.min(sx, syAvailable);
+  const scale = isMobileLike ? Math.min(sx * 1.42, syAvailable) : Math.min(sx, syAvailable);
   wrap.style.transform = `scale(${scale})`;
   // center horizontally & vertically
   const scaledW = world.width * scale;
