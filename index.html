@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tank Hero 90s - Önizleme ve Oyun</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="layout single full">
+    <section class="panel center full">
+      <div id="start-overlay" class="start-overlay">
+        <div class="start-card">
+          <h2>Tank Oyunu</h2>
+          <p>WASD / Ok tuşları: hareket · Space: ateş · R: sıfırla</p>
+          <button id="btn-start" class="btn">Başla</button>
+        </div>
+      </div>
+      <div id="game-wrap" class="game-wrap">
+        <canvas id="game" width="800" height="600" class="game-canvas"></canvas>
+      </div>
+      <div id="touch-controls" class="touch-controls" aria-label="Dokunmatik kontroller">
+        <div class="dpad" aria-hidden="false">
+          <button class="btn-dir up" data-key="arrowup" aria-label="Yukarı">▲</button>
+          <div class="middle-row">
+            <button class="btn-dir left" data-key="arrowleft" aria-label="Sol">◀</button>
+            <button class="btn-dir center" disabled aria-hidden="true"></button>
+            <button class="btn-dir right" data-key="arrowright" aria-label="Sağ">▶</button>
+          </div>
+          <button class="btn-dir down" data-key="arrowdown" aria-label="Aşağı">▼</button>
+        </div>
+        <div class="actions">
+          <button id="btn-fire" class="btn-action fire" data-key="space" aria-label="Ateş">ATEŞ</button>
+          <button id="btn-reset" class="btn-action reset" data-key="r" aria-label="Sıfırla">R</button>
+        </div>
+      </div>
+      <div class="sr-only" aria-live="polite">
+        <span id="score">Skor: 0</span>
+        <span id="status"></span>
+      </div>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
+
+
