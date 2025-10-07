@@ -218,12 +218,21 @@ html, body {
   gap: 6px;
   align-items: center;
   justify-items: start; /* left align */
-  margin-right: auto; /* push D-Pad to the right */
-  align-self: flex-start; /* stick to bottom-left padding */
+  margin-left: auto; /* push D-Pad to the left */
+  align-self: flex-start;
+  position: absolute;
+  right: 8px; /* stick to right edge */
+  /* align Fire with Up: offset by one button height + gap from bottom */
+  bottom: calc(4px + clamp(32px, 8vw, 48px) + 6px);
 }
 
-/* push D-Pad to the right side */
-.touch-controls .dpad { margin-left: auto; }
+/* push D-Pad to the left side (right-handed layout) */
+.touch-controls .dpad {
+  margin-right: auto;
+  position: absolute;
+  left: 8px; /* stick to left edge */
+  bottom: 4px;
+}
 
 /* Show touch controls on small screens or when touch is primary */
 @media (hover: none) and (pointer: coarse) {
