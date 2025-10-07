@@ -267,9 +267,11 @@ function rescale() {
   const controlsRect = (touchControls && getComputedStyle(touchControls).display !== 'none') ? touchControls.getBoundingClientRect() : null;
   const controlsHeight = controlsRect ? Math.ceil(window.innerHeight - controlsRect.top) : 0;
   const isMobileLike = (window.matchMedia && window.matchMedia('(hover: none) and (pointer: coarse)').matches) || vw <= 900;
-  const syAvailable = Math.max(0.98, (vh - controlsHeight) / world.height);
-  // Expand to fill space on mobile by preferring width scale more
-  const scale = isMobileLike ? Math.min(sx * 1.6, syAvailable) : Math.min(sx, syAvailable);
+  // On mobile, allow canvas to grow closer under controls to utilize width
+  const effectiveControls = isMobileLike ? Math.max(0, controlsHeight * 0.5) : controlsHeight;
+  const syAvailable = Math.max(0.98, (vh - effectiveControls) / world.height);
+  // Expand to fill space on mobile by preferring width more aggressively
+  const scale = isMobileLike ? Math.min(sx * 1.65, syAvailable) : Math.min(sx, syAvailable);
   wrap.style.transform = `scale(${scale})`;
   // center horizontally & vertically
   const scaledW = world.width * scale;
